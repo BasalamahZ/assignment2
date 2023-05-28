@@ -4,7 +4,6 @@ import (
 	"assignment2/pkg/order/dto"
 	"assignment2/pkg/order/model"
 	"assignment2/pkg/order/repository"
-	"fmt"
 )
 
 type UsecaseInterfaceOrder interface {
@@ -57,7 +56,6 @@ func (u *usecaseOrder) CreateOrder(input dto.OrderRequest) (model.Order, error) 
 		return newOrder, err
 	}
 
-	
 	itemsResponse := []model.Item{}
 
 	for _, eachItem := range itemsPayload {
@@ -70,7 +68,6 @@ func (u *usecaseOrder) CreateOrder(input dto.OrderRequest) (model.Order, error) 
 		}
 		itemsResponse = append(itemsResponse, newItem)
 	}
-	fmt.Println("item", itemsResponse)
 
 	result := model.Order{
 		OrderId:      newOrder.OrderId,

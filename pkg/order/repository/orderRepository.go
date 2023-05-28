@@ -2,6 +2,7 @@ package repository
 
 import (
 	"assignment2/pkg/order/model"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -41,6 +42,8 @@ func (r *repositoryOrder) CreateOrder(order model.Order, item []model.Item) (mod
 			return order, err
 		}
 	}
+
+	fmt.Println("item", item)
 	return order, nil
 }
 
