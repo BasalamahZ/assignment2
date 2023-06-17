@@ -8,7 +8,7 @@ import (
 
 type UsecaseInterfaceOrder interface {
 	GetAllOrder() (*[]model.Order, error)
-	CreateOrder(input dto.OrderRequest) (model.Order, error)
+	CreateOrder(input dto.OrderRequest) error
 	UpdateOrder(id int, input dto.OrderRequest) (*model.Order, error)
 	DeleteOrder(id int) error
 }
@@ -34,7 +34,7 @@ func (u *usecaseOrder) GetAllOrder() (*[]model.Order, error) {
 }
 
 // CreateOrder implements UsecaseInterfaceOrder
-func (u *usecaseOrder) CreateOrder(input dto.OrderRequest) (model.Order, error) {
+func (u *usecaseOrder) CreateOrder(input dto.OrderRequest) error {
 	order := model.Order{
 		OrderedAt:    input.OrderedAt,
 		CostumerName: input.CostumerName,
@@ -51,32 +51,29 @@ func (u *usecaseOrder) CreateOrder(input dto.OrderRequest) (model.Order, error) 
 
 		itemsPayload = append(itemsPayload, item)
 	}
-	newOrder, err := u.repositoryOrder.CreateOrder(order, itemsPayload)
-	if err != nil {
-		return newOrder, err
-	}
+	return u.repositoryOrder.CreateOrder(order, itemsPayload)
 
-	itemsResponse := []model.Item{}
+	// itemsResponse := []model.Item{}
 
-	for _, eachItem := range itemsPayload {
-		newItem := model.Item{
-			ItemId:      eachItem.ItemId,
-			OrderId:     int(newOrder.OrderId),
-			ItemCode:    eachItem.ItemCode,
-			Quantity:    eachItem.Quantity,
-			Description: eachItem.Description,
-		}
-		itemsResponse = append(itemsResponse, newItem)
-	}
+	// for _, eachItem := range itemsPayload {
+	// 	newItem := model.Item{
+	// 		ItemId:      eachItem.ItemId,
+	// 		OrderId:     int(newOrder.OrderId),
+	// 		ItemCode:    eachItem.ItemCode,
+	// 		Quantity:    eachItem.Quantity,
+	// 		Description: eachItem.Description,
+	// 	}
+	// 	itemsResponse = append(itemsResponse, newItem)
+	// }
 
-	result := model.Order{
-		OrderId:      newOrder.OrderId,
-		CostumerName: newOrder.CostumerName,
-		OrderedAt:    newOrder.OrderedAt,
-		Items:        itemsPayload,
-	}
+	// result := model.Order{
+	// 	OrderId:      newOrder.OrderId,
+	// 	CostumerName: newOrder.CostumerName,
+	// 	OrderedAt:    newOrder.OrderedAt,
+	// 	Items:        itemsPayload,
+	// }
 
-	return result, nil
+	// return nil
 
 }
 
@@ -129,5 +126,9 @@ func (u *usecaseOrder) UpdateOrder(id int, input dto.OrderRequest) (*model.Order
 
 // DeleteOrder implements UsecaseInterfaceOrder
 func (u *usecaseOrder) DeleteOrder(id int) error {
+	_, err := u.repositoryOrder.GetOrderById(id)
+	if err != nil {
+		return err
+	}
 	return u.repositoryOrder.DeleteOrder(id)
 }

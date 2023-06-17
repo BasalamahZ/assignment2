@@ -2,13 +2,12 @@ package repository
 
 import (
 	"assignment2/pkg/order/model"
-	"fmt"
 
 	"gorm.io/gorm"
 )
 
 type RepositoryInterfaceOrder interface {
-	CreateOrder(order model.Order, item []model.Item) (model.Order, error)
+	CreateOrder(order model.Order, item []model.Item) error
 	GetAllOrder() ([]model.Order, error)
 	GetOrderById(id int) (model.Order, error)
 	UpdateOrder(id int, order model.Order, item []model.Item) (model.Order, error)
@@ -27,9 +26,9 @@ func InitRepositoryOrder(db *gorm.DB) RepositoryInterfaceOrder {
 	}
 }
 
-func (r *repositoryOrder) CreateOrder(order model.Order, item []model.Item) (model.Order, error) {
+func (r *repositoryOrder) CreateOrder(order model.Order, item []model.Item) error {
 	if err := r.db.Table("orders").Create(&order).Error; err != nil {
-		return order, err
+		return err
 	}
 
 	for _, eachItem := range item {
@@ -39,12 +38,11 @@ func (r *repositoryOrder) CreateOrder(order model.Order, item []model.Item) (mod
 			Quantity:    eachItem.Quantity,
 			OrderId:     int(order.OrderId),
 		}).Error; err != nil {
-			return order, err
+			return err
 		}
 	}
 
-	fmt.Println("item", item)
-	return order, nil
+	return nil
 }
 
 func (r *repositoryOrder) GetAllOrder() ([]model.Order, error) {

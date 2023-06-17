@@ -47,7 +47,7 @@ func (c *OrderHTTPController) CreateOrder(ctx *gin.Context) {
 		return
 	}
 
-	order, err := c.usecaseOrder.CreateOrder(input)
+	err := c.usecaseOrder.CreateOrder(input)
 	if err != nil {
 		ctx.IndentedJSON(
 			http.StatusInternalServerError, gin.H{
@@ -60,7 +60,6 @@ func (c *OrderHTTPController) CreateOrder(ctx *gin.Context) {
 	ctx.IndentedJSON(http.StatusCreated, gin.H{
 		"message": "Success",
 		"status":  "Success",
-		"data":    order,
 	})
 }
 
@@ -104,7 +103,6 @@ func (c *OrderHTTPController) UpdateOrder(ctx *gin.Context) {
 
 func (c *OrderHTTPController) DeleteOrder(ctx *gin.Context) {
 	idString := ctx.Param("id")
-
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		ctx.IndentedJSON(http.StatusBadRequest, gin.H{
@@ -127,6 +125,6 @@ func (c *OrderHTTPController) DeleteOrder(ctx *gin.Context) {
 	ctx.IndentedJSON(http.StatusOK, gin.H{
 		"message": "Success",
 		"status":  "Success",
-		"data":    gin.H{},
+		"data":    "order has been successfully deleted",
 	})
 }
